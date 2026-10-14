@@ -33,6 +33,8 @@ from typing import Any
 
 import structlog
 
+from repowise.core.ids import file_path_of
+
 # Re-exported: the strategy table is asserted on through this module.
 from .call_language_strategies import _LANGUAGE_CALL_STRATEGIES as _LANGUAGE_CALL_STRATEGIES
 from .call_language_strategies import LanguageStrategiesMixin
@@ -1468,7 +1470,10 @@ class CallResolver(LanguageStrategiesMixin, ReceiverTypingMixin):
         if head is None or head == alias.name:
             return None
         alias_call = replace(call, target_name=head, receiver_name=None, receiver_call=None)
-        found = self._resolve_free_call(alias.id.split("::")[0], alias_call, alias.id)
+        alias_file = file_path_of(alias.id)
+        if alias_file is None:
+            return None
+        found = self._resolve_free_call(alias_file, alias_call, alias.id)
         target = self._symbols_by_id.get(found.callee_id) if found else None
         if target is None or target.kind != "class" or target.language != "kotlin":
             return None
