@@ -114,7 +114,7 @@ describe("fixPlanHref", () => {
     expect(
       fixPlanHref("r1", item({ kind: "finding", source: { opportunity_id: null, plan_ids: ["a/b c"], finding_ids: ["f"] } })),
     ).toBe("/repos/r1/refactoring?plan=a%2Fb%20c");
-});
+  });
 });
 
 describe("FixFirstSection", () => {
